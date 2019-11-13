@@ -3,14 +3,16 @@ DP_HOST=$1
 DP_PORT=$2
 DP_ADMIN=$3
 DP_PASS=$4
-DOMAIN=$5
+DOMAIN=default
+NIC=$5
+STATE=$6
 NUM_ARGS=$#
 
-INFILE=$DP_HOST-$DOMAIN-list_certs.cmd
-OUTFILE=$DP_HOTS-$DOMAIN-list_certs.txt
+INFILE=$DP_HOST-$DOMAIN-reboot.cmd
+OUTFILE=$DP_HOST-$DOMAIN-reboot.txt
 
 display_usage() {
-  echo -e "\nUsage:\n $0 dp_host_or_ip dp_ssh_port dp_admin dp_pass dp_domain\n"
+    echo -e "\nUsage:\n $0 dp_host_or_ip dp_ssh_port dp_admin\n"
 }
 
 main() {
@@ -20,27 +22,21 @@ main() {
     exit 0
   fi
   # if wrong number of  arguments supplied, display usage
-  if [[ ${NUM_ARGS} -ne 5 ]]; then
+  if [[ ${NUM_ARGS} -ne 6 ]]; then
     display_usage
     exit 1
   fi
-  list_certs
+  reboot
 }
 
-
-list_certs() {
-
-## Generate cmd and execute
+reboot() {
 cat<<EOF >$INFILE
 ${DP_ADMIN}
 ${DP_PASS}
-switch $DOMAIN;
-show certificate;
+  shutdown reboot
 EOF
-ssh -p $DP_PORT -T $DP_HOST < $INFILE >> $OUTFILE
+ssh -p $DP_PORT -T $DP_HOST < $INFILE > $OUTFILE
 cat $OUTFILE
-## End
-
 }
 
 main

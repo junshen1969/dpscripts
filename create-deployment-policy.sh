@@ -1,42 +1,14 @@
-DP_HOST=$1
-DP_PORT=$2
-DP_ADMIN=$3
-DP_PASS=$4
-DOMAIN=$5
-SCP_HOST=$6
-SCP_USER=$7
-SCP_PASS=$8
-NUM_ARGS=$#
-
-BACKUP_FILENAME=${DP_HOST}-${DOMAIN}-export.zip
+DOMAIN=default
+DP_PORT=2022
+DP_HOST=172.16.102.114
+DP_ADMIN=admin
+DP_PASS=Passw0rd!
 
 ## Create deployment policies in Target DataPower
 ## Create import package in Target DataPower
 ## Import configuration to Target DataPower
-INFILE=${DP_HOST}-${DOMAIN}-import.cmd
-OUTFILE=${DP_HOST}-${DOMAIN}-import.txt
-
-display_usage() {
-    echo -e "\nUsage:\n $0 dp_host_or_ip dp_ssh_port dp_admin dp_pass dp_domain scp_host scp_user scp_pass\n"
-}
-
-main() {
-  # check whether user had supplied -h or --help . If yes display usage
-  if [[ ( ${NUM_ARGS} == "--help") ||  ${NUM_ARGS} == "-h" ]]; then
-    display_usage
-    exit 0
-  fi
-  # if wrong number of  arguments supplied, display usage
-  if [[ ${NUM_ARGS} -ne 8 ]]; then
-    display_usage
-    exit 1
-  fi
-  import
-}
-
-import() {
-
-## Generate cmd and execute
+INFILE=${DP_HOST}-${DOMAIN}-create-deployment-policy.cmd
+OUTFILE=${DP_HOST}-${DOMAIN}-create-deployment-policy.txt
 cat<<EOF >$INFILE
 ${DP_ADMIN}
 ${DP_PASS}
@@ -63,6 +35,7 @@ deployment-policy "WP_Deployment_Policy"
   filter */default/network/smtp-server-connection
   filter */default/network/vlan
   filter */default/system/system
+  filter */default/access/username
 exit;
 
 import-package "WP_Import_Package"
@@ -77,21 +50,8 @@ exit;
 write mem;
 y
 
-copy scp://${SCP_USER}@${SCP_HOST}/${BACKUP_FILENAME} temporary:///${BACKUP_FILENAME};
-${SCP_PASS}
-import-execute WP_Import_Package
-write mem;
-y
-del temporary:///${BACKUP_FILENAME};
-
-no import-package "WP_Import_Package";
-no deployment-policy "WP_Deployment_Policy"
-write mem;
-y
 EOF
+
 ssh -p $DP_PORT -T $DP_HOST < $INFILE > $OUTFILE
 cat $OUTFILE
-## End
-}
 
-main
