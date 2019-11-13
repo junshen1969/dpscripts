@@ -11,7 +11,7 @@ Read this to know the list of scripts and what they do.
 | #    | Script                   | Description                                                  |
 | ---- | ------------------------ | ------------------------------------------------------------ |
 | 1    | check_opstate.sh         | List down all DataPower objects with its op-state of a particular domain. |
-| 2    | disable_syslog_target.sh | Disable the syslog target if the local-address is 'management'. |
+| 2    | disable_syslog_target.sh | Disable the syslog target if the local-address is 'management' of the physical appliance during cutover. |
 | 3    | export.sh                | Export a domain.                                             |
 | 4    | import.sh                | Import a domain with filtered deployment policies. Modify the scripts if you need to adjust the filters. |
 | 5    | list_certs.sh            | List of the certificates of a domain.                        |
