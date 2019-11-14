@@ -15,7 +15,7 @@ Read this to know the list of scripts and what they do.
 | 3    | export.sh                | Export a domain.                                             |
 | 4    | import.sh                | Import a domain with filtered deployment policies. Modify the scripts if you need to adjust the filters. |
 | 5    | list_certs.sh            | List of the certificates of a domain.                        |
-| 6    | list_down_certs.sh       | List objects that are enabled but down.                      |
+| 6    | list_down_certs.sh       | List objects that are enabled but down of a do               |
 | 7    | list_objects.sh          | List a particular DataPower object of a domain.              |
 | 8    | reboot.sh                | Reboot the appliance.                                        |
 | 9    | set_nic_state.sh         | Set the admin-state of a particular network interface.       |
